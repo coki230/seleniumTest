@@ -72,5 +72,6 @@
     <orderEntry type="library" name="Maven: org.seleniumhq.selenium:selenium-safari-driver:4.0.0-alpha-6" level="project" />
     <orderEntry type="library" name="Maven: org.seleniumhq.selenium:selenium-support:4.0.0-alpha-6" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.47" level="project" />
   </component>
 </module>
