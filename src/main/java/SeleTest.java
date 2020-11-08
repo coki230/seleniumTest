@@ -1,5 +1,6 @@
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
@@ -15,6 +16,12 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -36,7 +43,9 @@ import java.util.concurrent.TimeUnit;
 public class SeleTest {
     public static void main(String[] args) {
         SeleTest seleTest = new SeleTest();
-        System.setProperty("webdriver.gecko.driver", "E:\\soft\\geckodriver/geckodriver.exe");
+//        System.setProperty("webdriver.gecko.driver", "E:\\soft\\geckodriver/geckodriver.exe");
+        System.setProperty("webdriver.gecko.driver", "/Users/xiao230/Desktop/soft/Firefox-driver/geckodriver");
+
         WebDriver driver = new FirefoxDriver();
         try {
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -52,7 +61,7 @@ public class SeleTest {
         }
     }
 
-    private void tapc(WebDriver driver) throws InterruptedException, IOException {
+    private void tapc(WebDriver driver) throws InterruptedException, IOException, AWTException {
 
         driver.get("https://www.tapd.cn/51894879/bugtrace/bugreports/my_view");
         setCookie(driver);
@@ -67,7 +76,7 @@ public class SeleTest {
         actions.moveToElement(webElement).clickAndHold().click().perform();
     }
 
-    private void createTapd(WebDriver driver) throws InterruptedException {
+    private void createTapd(WebDriver driver) throws InterruptedException, AWTException, IOException {
         // create new button
         driver.findElement(By.id("btn_add_bug")).click();
 
@@ -114,27 +123,74 @@ public class SeleTest {
 //                BugCustomField6.click();
 //                hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='功能缺陷']")));
 
-//                driver.switchTo().frame(driver.findElement(By.xpath("//*[@id=\"editor-BugDescription\"]/div[7]/iframe")));
-//                JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-//                // 实施人员
-//                jsExecutor.executeScript("arguments[0].innerHTML = '赵泽'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[1]/div")));
-//                // 实施时间
-//                Date t = new Date();
-//                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                jsExecutor.executeScript("arguments[0].innerHTML = '"+ df.format(t) +"'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[2]/div")));
-//                // 实施事项
-//                jsExecutor.executeScript("arguments[0].innerHTML = '大盘巡检'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[3]/div")));
-//                // 问题截图
-//                jsExecutor.executeScript("arguments[0].innerHTML = 'url'", driver.findElement(By.xpath("/html/body/div[1]/div[3]")));
-//                jsExecutor.executeScript("arguments[0].focus()", driver.findElement(By.xpath("/html/body/div[1]/div[3]")));
+                driver.switchTo().frame(driver.findElement(By.xpath("//*[@id=\"editor-BugDescription\"]/div[7]/iframe")));
+                JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+                // 实施人员
+                jsExecutor.executeScript("arguments[0].innerHTML = '赵泽'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[1]/div")));
+                // 实施时间
+                Date t = new Date();
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                jsExecutor.executeScript("arguments[0].innerHTML = '"+ df.format(t) +"'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[2]/div")));
+                // 实施事项
+                jsExecutor.executeScript("arguments[0].innerHTML = '大盘巡检'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[3]/div")));
+                // 问题截图
+                WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div[3]"));
+                jsExecutor.executeScript("arguments[0].innerHTML = 'url'", element);
+                jsExecutor.executeScript("arguments[0].scrollIntoView();", element);
+                hoverAndClick(driver, element);
 
-                driver.switchTo().window(windowHandle);
-                driver.findElement(By.xpath("//*[@id=\"upload-attachement\"]/b")).click();
+                //指定图片路径
+                Image image = ImageIO.read(new File("/Users/xiao230/Desktop/123.png"));
+                //把图片路径复制到剪切板
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new ClipImage(image), null);
+                //新建一个Robot类的对象
+                Robot robot = new Robot();
+                Thread.sleep(1000);
+                //按下Ctrl+V
+                robot.keyPress(KeyEvent.VK_CONTROL);
+                robot.keyPress(KeyEvent.VK_V);
+                //释放Ctrl+V
+                robot.keyRelease(KeyEvent.VK_V);
+                robot.keyRelease(KeyEvent.VK_CONTROL);
+                Thread.sleep(2000);
+
+
+                driver.switchTo().defaultContent();
+                driver.findElement(By.xpath("//*[@id=\"editor-BugDescription\"]/div[6]/span[16]")).click();
 
                 System.out.println(111);
 
 
+                Thread.sleep(20000);
+
             }
+        }
+    }
+
+    class ClipImage implements Transferable {
+        private Image image;
+
+        public ClipImage(Image image) {
+            this.image = image;
+        }
+
+        @Override
+        public DataFlavor[] getTransferDataFlavors() {
+            return new DataFlavor[]{DataFlavor.imageFlavor};
+        }
+
+        @Override
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
+            return DataFlavor.imageFlavor.equals(flavor);
+        }
+
+        @NotNull
+        @Override
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+            if (!DataFlavor.imageFlavor.equals(flavor)) {
+                throw new UnsupportedFlavorException(flavor);
+            }
+            return image;
         }
     }
 
