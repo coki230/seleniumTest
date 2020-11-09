@@ -5,6 +5,15 @@ public class Tapd {
     private String range;
     private String mark;
     private String namespace;
+    private String tapdUrl;
+
+    public String getTapdUrl() {
+        return tapdUrl;
+    }
+
+    public void setTapdUrl(String tapdUrl) {
+        this.tapdUrl = tapdUrl;
+    }
 
     public String getNamespace() {
         return namespace;
