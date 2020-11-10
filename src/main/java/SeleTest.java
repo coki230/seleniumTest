@@ -53,7 +53,7 @@ public class SeleTest {
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
             // dev test prod
-            String env = "prod";
+            String env = "test";
             // type is error or slow
             String type = "error";
             SeleTest.picPath = "C:\\Users\\Administrator\\Desktop\\tmp\\" + env + "\\" + type + "\\";
@@ -98,7 +98,7 @@ public class SeleTest {
     private void hoverAndClick(WebDriver driver, WebElement webElement) throws InterruptedException {
         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
         jsExecutor.executeScript("arguments[0].scrollIntoView();", webElement);
-        Thread.sleep(1000);
+        Thread.sleep(500);
         Actions actions = new Actions(driver);
         actions.moveToElement(webElement).clickAndHold().click().perform();
     }
@@ -112,7 +112,7 @@ public class SeleTest {
             Set<String> windowHandles = driver.getWindowHandles();
             for (String windowHandle : windowHandles) {
                 WebDriver window = driver.switchTo().window(windowHandle);
-                Thread.sleep(5000);
+                Thread.sleep(3000);
                 try {
                     if (window.getCurrentUrl().contains("add")) {
                         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
@@ -167,11 +167,12 @@ public class SeleTest {
                         jsExecutor.executeScript("arguments[0].innerHTML = '"+ df.format(t) +"'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[2]/div")));
                         // 实施事项
                         jsExecutor.executeScript("arguments[0].innerHTML = '大盘巡检'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[3]/div")));
+                        // url
+                        WebElement url = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
+                        jsExecutor.executeScript("arguments[0].innerHTML = '1、问题截图<br>"+ tapd.getLink() +"'", url);
                         // 问题截图
-                        WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div[3]"));
-                        jsExecutor.executeScript("arguments[0].innerHTML = '"+ tapd.getTapdUrl() +"'", element);
-                        jsExecutor.executeScript("arguments[0].scrollIntoView();", element);
-                        hoverAndClick(driver, element);
+                        WebElement pic = driver.findElement(By.xpath("/html/body/div[1]/div[3]"));
+                        hoverAndClick(driver, pic);
 
                         //指定图片路径
                         Image image = ImageIO.read(new File(SeleTest.picPath + tapd.getMark() + ".png"));
@@ -191,7 +192,7 @@ public class SeleTest {
                         //释放Ctrl+V
                         robot.keyRelease(KeyEvent.VK_V);
                         robot.keyRelease(KeyEvent.VK_CONTROL);
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
 
 
                         driver.switchTo().defaultContent();
