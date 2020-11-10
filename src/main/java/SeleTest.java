@@ -169,7 +169,7 @@ public class SeleTest {
                         jsExecutor.executeScript("arguments[0].innerHTML = '大盘巡检'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[3]/div")));
                         // 问题截图
                         WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div[3]"));
-                        jsExecutor.executeScript("arguments[0].innerHTML = 'url'", element);
+                        jsExecutor.executeScript("arguments[0].innerHTML = '"+ tapd.getTapdUrl() +"'", element);
                         jsExecutor.executeScript("arguments[0].scrollIntoView();", element);
                         hoverAndClick(driver, element);
 
