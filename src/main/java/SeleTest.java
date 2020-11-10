@@ -53,23 +53,26 @@ public class SeleTest {
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
             // dev test prod
-            String env = "test";
+            String env = "prod";
             // type is error or slow
             String type = "error";
             SeleTest.picPath = "C:\\Users\\Administrator\\Desktop\\tmp\\" + env + "\\" + type + "\\";
             List<Tapd> tapds = seleTest.getProject(driver, env, type);
 
-//            URL a = SeleTest.class.getClassLoader().getResource("");
-//            File file1 = new File(a.getPath() + "\\tapdList.txt");
-//            BufferedReader reader = new BufferedReader(new FileReader(file1));
-//            StringBuffer buffer = new StringBuffer();
-//            String s = "";
-//            while ((s = reader.readLine()) != null) {
-//                buffer.append(s);
-//            }
-//            List<Tapd> tapds = JSON.parseArray(buffer.toString(), Tapd.class);
-
             seleTest.tapc(driver, tapds, env);
+
+            System.out.println("=================================================================");
+            System.out.println("【"+ env +"环境】");
+            tapds.forEach(tapd -> {
+                if (tapd.getTapdUrl() != null && !tapd.getTapdUrl().contains("add")) {
+                    System.out.println("空间：" + tapd.getNamespace());
+                    System.out.println("服务：" + tapd.getMark());
+                    System.out.println("责任人：@" + tapd.getDealMan());
+                    System.out.println("问题简述:  有错误");
+                    System.out.println("tapd地址：" + tapd.getTapdUrl());
+                    System.out.println();
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -92,12 +95,15 @@ public class SeleTest {
         createTapd(driver,tapds, env);
     }
 
-    private void hoverAndClick(WebDriver driver, WebElement webElement) {
+    private void hoverAndClick(WebDriver driver, WebElement webElement) throws InterruptedException {
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        jsExecutor.executeScript("arguments[0].scrollIntoView();", webElement);
+        Thread.sleep(1000);
         Actions actions = new Actions(driver);
         actions.moveToElement(webElement).clickAndHold().click().perform();
     }
 
-    private void createTapd(WebDriver driver, List<Tapd> tapds, String env) throws InterruptedException, AWTException, IOException {
+    private void createTapd(WebDriver driver, List<Tapd> tapds, String env) throws InterruptedException {
         String mainWindow = driver.getWindowHandle();
         for (Tapd tapd : tapds) {
             // create new button
@@ -106,100 +112,100 @@ public class SeleTest {
             Set<String> windowHandles = driver.getWindowHandles();
             for (String windowHandle : windowHandles) {
                 WebDriver window = driver.switchTo().window(windowHandle);
-                Thread.sleep(200);
-                if (window.getCurrentUrl().contains("add")) {
-                    // set title
-                    driver.findElement(By.id("BugTitle")).clear();
-                    driver.findElement(By.id("BugTitle")).sendKeys(tapd.getTitle());
-                    // set 优先级
-                    WebElement bugPriority = driver.findElement(By.xpath("//*[@id=\"BugPriorityDiv\"]/div"));
-                    bugPriority.click();
-                    hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='中']")));
-                    // set 严重程度 *
-                    WebElement bugSeverity = driver.findElement(By.xpath("//*[@id=\"BugSeverityDiv\"]/div/div"));
-                    bugSeverity.click();
-                    hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='一般']")));
-                    // set 混合云环境 *
-                    WebElement envWebElement = driver.findElement(By.xpath("//*[@id=\"BugCustomFieldThreeDiv\"]/div/div"));
-                    envWebElement.click();
-                    if (env.equals("prod")) {
-                        hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='prod_kl']")));
-                    } else {
-                        hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ env +"']")));
+                Thread.sleep(5000);
+                try {
+                    if (window.getCurrentUrl().contains("add")) {
+                        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+                        // set title
+                        driver.findElement(By.id("BugTitle")).clear();
+                        driver.findElement(By.id("BugTitle")).sendKeys(tapd.getTitle());
+                        // set 优先级
+                        WebElement bugPriority = driver.findElement(By.xpath("//*[@id=\"BugPriorityDiv\"]/div"));
+                        bugPriority.click();
+                        hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='中']")));
+                        // set 严重程度 *
+                        WebElement bugSeverity = driver.findElement(By.xpath("//*[@id=\"BugSeverityDiv\"]/div/div"));
+                        bugSeverity.click();
+                        hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='一般']")));
+                        // set 混合云环境 *
+                        WebElement envWebElement = driver.findElement(By.xpath("//*[@id=\"BugCustomFieldThreeDiv\"]/div/div"));
+                        envWebElement.click();
+                        if (env.equals("prod")) {
+                            hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='prod_kl']")));
+                        } else {
+                            hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ env +"']")));
+                        }
+                        // set 处理人
+                        WebElement bugCurrentOwner = driver.findElement(By.id("BugCurrentOwnerValue"));
+                        bugCurrentOwner.click();
+                        Thread.sleep(2000);
+                        bugCurrentOwner.sendKeys(tapd.getDealMan());
+                        Thread.sleep(2000);
+                        // we need click some element to fill the input
+                        driver.findElement(By.id("BugTitle")).click();
+                        // set 所属部门 *
+                        WebElement bugCustomFieldOne = driver.findElement(By.xpath("//*[@id=\"BugCustomFieldOneDiv\"]/div/div"));
+                        bugCustomFieldOne.click();
+                        hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ Util.getTapdDept(tapd.getDept()) +"']")));
+                        // set 业务范围 *
+                        WebElement bugCustomFieldFive = driver.findElement(By.xpath("//*[@id=\"BugCustomFieldFiveDiv\"]/div/div"));
+                        bugCustomFieldFive.click();
+                        hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ tapd.getRange() +"']")));
+                        // set 项目标识 *
+                        driver.findElement(By.id("BugCustomFieldTwo")).sendKeys(tapd.getMark());
+                        // set 问题分类 *
+                        WebElement BugCustomField6 = driver.findElement(By.xpath("//*[@id=\"BugCustomField6Div\"]/div/div"));
+                        BugCustomField6.click();
+                        hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='功能缺陷']")));
+
+                        driver.switchTo().frame(driver.findElement(By.xpath("//*[@id=\"editor-BugDescription\"]/div[7]/iframe")));
+                        // 实施人员
+                        jsExecutor.executeScript("arguments[0].innerHTML = '赵泽'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[1]/div")));
+                        // 实施时间
+                        Date t = new Date();
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        jsExecutor.executeScript("arguments[0].innerHTML = '"+ df.format(t) +"'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[2]/div")));
+                        // 实施事项
+                        jsExecutor.executeScript("arguments[0].innerHTML = '大盘巡检'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[3]/div")));
+                        // 问题截图
+                        WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div[3]"));
+                        jsExecutor.executeScript("arguments[0].innerHTML = 'url'", element);
+                        jsExecutor.executeScript("arguments[0].scrollIntoView();", element);
+                        hoverAndClick(driver, element);
+
+                        //指定图片路径
+                        Image image = ImageIO.read(new File(SeleTest.picPath + tapd.getMark() + ".png"));
+                        //把图片路径复制到剪切板
+                        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new ClipImage(image), null);
+                        //新建一个Robot类的对象
+                        Robot robot = new Robot();
+                        Thread.sleep(1000);
+                        // change line
+
+                        robot.keyPress(KeyEvent.VK_ENTER);
+                        robot.keyRelease(KeyEvent.VK_ENTER);
+                        Thread.sleep(1000);
+                        //按下Ctrl+V
+                        robot.keyPress(KeyEvent.VK_CONTROL);
+                        robot.keyPress(KeyEvent.VK_V);
+                        //释放Ctrl+V
+                        robot.keyRelease(KeyEvent.VK_V);
+                        robot.keyRelease(KeyEvent.VK_CONTROL);
+                        Thread.sleep(2000);
+
+
+                        driver.switchTo().defaultContent();
+                        // click the submit button
+                        driver.findElement(By.xpath("//*[@id=\"_view\"]")).click();
+                        Thread.sleep(5000);
+
+                        String currentUrl = driver.getCurrentUrl();
+                        tapd.setTapdUrl(currentUrl);
+                        driver.close();
                     }
-                    // set 处理人
-                    WebElement bugCurrentOwner = driver.findElement(By.id("BugCurrentOwnerValue"));
-                    bugCurrentOwner.click();
-                    Thread.sleep(2000);
-                    bugCurrentOwner.sendKeys(tapd.getDealMan());
-                    Thread.sleep(2000);
-                    // we need click some element to fill the input
-                    driver.findElement(By.id("BugTitle")).click();
-                    // set 所属部门 *
-                    WebElement bugCustomFieldOne = driver.findElement(By.xpath("//*[@id=\"BugCustomFieldOneDiv\"]/div/div"));
-                    bugCustomFieldOne.click();
-                    hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ Util.getTapdDept(tapd.getDept()) +"']")));
-                    // set 业务范围 *
-                    WebElement bugCustomFieldFive = driver.findElement(By.xpath("//*[@id=\"BugCustomFieldFiveDiv\"]/div/div"));
-                    bugCustomFieldFive.click();
-                    hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ tapd.getRange() +"']")));
-                    // set 项目标识 *
-                    driver.findElement(By.id("BugCustomFieldTwo")).sendKeys(tapd.getMark());
-                    // set 问题分类 *
-                    Thread.sleep(2000);
-                    WebElement BugCustomField6 = driver.findElement(By.xpath("//*[@id=\"BugCustomField6Div\"]/div/div"));
-                    //使用显示等待，等待掩盖的div消失
-                    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-                    wait.until(ExpectedConditions.elementToBeClickable(BugCustomField6));
-                    BugCustomField6.click();
-                    hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='功能缺陷']")));
-
-                    driver.switchTo().frame(driver.findElement(By.xpath("//*[@id=\"editor-BugDescription\"]/div[7]/iframe")));
-                    JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-                    // 实施人员
-                    jsExecutor.executeScript("arguments[0].innerHTML = '赵泽'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[1]/div")));
-                    // 实施时间
-                    Date t = new Date();
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    jsExecutor.executeScript("arguments[0].innerHTML = '"+ df.format(t) +"'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[2]/div")));
-                    // 实施事项
-                    jsExecutor.executeScript("arguments[0].innerHTML = '大盘巡检'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[3]/div")));
-                    // 问题截图
-                    WebElement element = driver.findElement(By.xpath("/html/body/div[1]/div[3]"));
-                    jsExecutor.executeScript("arguments[0].innerHTML = 'url'", element);
-                    jsExecutor.executeScript("arguments[0].scrollIntoView();", element);
-                    hoverAndClick(driver, element);
-
-                    //指定图片路径
-                    Image image = ImageIO.read(new File(SeleTest.picPath + tapd.getMark() + ".png"));
-                    //把图片路径复制到剪切板
-                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new ClipImage(image), null);
-                    //新建一个Robot类的对象
-                    Robot robot = new Robot();
-                    Thread.sleep(1000);
-                    // change line
-
-                    robot.keyPress(KeyEvent.VK_ENTER);
-                    robot.keyRelease(KeyEvent.VK_ENTER);
-                    Thread.sleep(1000);
-                    //按下Ctrl+V
-                    robot.keyPress(KeyEvent.VK_CONTROL);
-                    robot.keyPress(KeyEvent.VK_V);
-                    //释放Ctrl+V
-                    robot.keyRelease(KeyEvent.VK_V);
-                    robot.keyRelease(KeyEvent.VK_CONTROL);
-                    Thread.sleep(2000);
-
-
-                    driver.switchTo().defaultContent();
-                    // click the submit button
-                    driver.findElement(By.xpath("//*[@id=\"_view\"]")).click();
-                    Thread.sleep(5000);
-
-                    String currentUrl = driver.getCurrentUrl();
-                    tapd.setTapdUrl(currentUrl);
+                } catch (Exception e) {
+                    e.printStackTrace();
                     driver.close();
-
                 }
             }
             driver.switchTo().window(mainWindow);
@@ -344,12 +350,12 @@ public class SeleTest {
                     Relation relation = project.get(mark);
                     if (relation != null) {
                         errorMarkAndNamespaceList.add(namespace + ";" + mark + ";" + currentUrl);
-                        System.out.println("空间：" + namespace);
-                        System.out.println("服务：" + mark);
-                        System.out.println("责任人：@" + relation.getOwnerName());
-                        System.out.println("问题简述:  有错误");
-                        System.out.println("tapd地址：");
-                        System.out.println();
+//                        System.out.println("空间：" + namespace);
+//                        System.out.println("服务：" + mark);
+//                        System.out.println("责任人：@" + relation.getOwnerName());
+//                        System.out.println("问题简述:  有错误");
+//                        System.out.println("tapd地址：");
+//                        System.out.println();
                     }
                     // capture the pic
                     WebElement errorPic;
@@ -371,8 +377,6 @@ public class SeleTest {
             driver.switchTo().window(mainWindow);
         }
 
-        System.out.println("=================================================================");
-
         // print tapd info
         for (String s : errorMarkAndNamespaceList) {
             Tapd tapd = new Tapd();
@@ -380,7 +384,7 @@ public class SeleTest {
             Relation relation = project.get(split[1]);
             System.out.println("【"+ env + "环境】"+ split[0] +" + "+ split[1] +" + 有错误");
             System.out.println("处理人 " + relation.getOwnerName());
-            System.out.println("项目标识 " + split[0]);
+            System.out.println("项目标识 " + split[1]);
             System.out.println("所属部门 " + relation.getDept());
             System.out.println("业务范围 " + relation.getBelong());
             System.out.println("问题链接 " + split[2]);
@@ -388,7 +392,7 @@ public class SeleTest {
             tapd.setDealMan(relation.getOwnerName());
             tapd.setDept(relation.getDept());
             tapd.setLink(split[2]);
-            tapd.setMark(split[0]);
+            tapd.setMark(split[1]);
             tapd.setRange(relation.getBelong());
             tapd.setTitle("【"+ env + "环境】"+ split[0] +" + "+ split[1] +" + 有错误");
             tapd.setNamespace(split[0]);
