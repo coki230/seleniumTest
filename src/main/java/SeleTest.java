@@ -53,7 +53,7 @@ public class SeleTest {
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
             // dev test prod
-            String env = "test";
+            String env = "prod";
             // type is error or slow
             String type = "error";
             SeleTest.picPath = "C:\\Users\\Administrator\\Desktop\\tmp\\" + env + "\\" + type + "\\";
@@ -73,6 +73,8 @@ public class SeleTest {
                     System.out.println();
                 }
             });
+
+//            seleTest.getCookie(driver);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -81,13 +83,16 @@ public class SeleTest {
         }
     }
 
+    private void getCookie(WebDriver driver) throws InterruptedException, IOException {
+        driver.get("https://www.tapd.cn/51894879/bugtrace/bugreports/my_view");
+        driver.manage().deleteAllCookies();
+        Thread.sleep(20000);
+        writeCookie(driver);
+    }
+
     private void tapc(WebDriver driver, List<Tapd> tapds, String env) throws InterruptedException, IOException, AWTException {
 
         driver.get("https://www.tapd.cn/51894879/bugtrace/bugreports/my_view");
-
-//        driver.manage().deleteAllCookies();
-//        Thread.sleep(20000);
-//        writeCookie(driver);
 
         setCookie(driver);
         driver.navigate().refresh();
@@ -169,7 +174,7 @@ public class SeleTest {
                         jsExecutor.executeScript("arguments[0].innerHTML = '大盘巡检'", driver.findElement(By.xpath("/html/body/div[1]/div[1]/table/tbody/tr[4]/td[3]/div")));
                         // url
                         WebElement url = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
-                        jsExecutor.executeScript("arguments[0].innerHTML = '1、问题截图<br>"+ tapd.getLink() +"'", url);
+                        jsExecutor.executeScript("arguments[0].innerHTML = '1、问题截图<br><font color=\"red\"><strong>请修改状态到“待验证”，并指定给创建人。由创建人关闭，否则不要指定给创建人验证。</strong></font><br>"+ tapd.getLink() +"'", url);
                         // 问题截图
                         WebElement pic = driver.findElement(By.xpath("/html/body/div[1]/div[3]"));
                         hoverAndClick(driver, pic);
@@ -308,7 +313,6 @@ public class SeleTest {
 
     private List<Tapd> getInfo(WebDriver driver, String type, Map<String, Relation> project, String env) throws IOException, InterruptedException {
         List<Tapd> tapds = new ArrayList<>();
-        List<String> errorMarkAndNamespaceList = new ArrayList<>();
         // find apm
         driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/div[2]/section/div/ul/li[3]")).click();
         // find error project
@@ -349,15 +353,6 @@ public class SeleTest {
                     String namespace = split[0];
                     String mark = split[1];
                     Relation relation = project.get(mark);
-                    if (relation != null) {
-                        errorMarkAndNamespaceList.add(namespace + ";" + mark + ";" + currentUrl);
-//                        System.out.println("空间：" + namespace);
-//                        System.out.println("服务：" + mark);
-//                        System.out.println("责任人：@" + relation.getOwnerName());
-//                        System.out.println("问题简述:  有错误");
-//                        System.out.println("tapd地址：");
-//                        System.out.println();
-                    }
                     // capture the pic
                     WebElement errorPic;
                     if (type.equals("error")) {
@@ -373,31 +368,31 @@ public class SeleTest {
                     errorPicFile.createNewFile();
                     captureElement(errorPicFile, errorPic, driver);
                     driver.close();
+
+                    try {
+                        Tapd tapd = new Tapd();
+                        System.out.println("【"+ env + "环境】"+ split[0] +" + "+ split[1] +" + 有错误");
+                        System.out.println("项目标识 " + split[1]);
+                        System.out.println("问题链接 " + split[2]);
+                        System.out.println("所属部门 " + relation.getDept());
+                        System.out.println("业务范围 " + relation.getBelong());
+                        System.out.println("处理人 " + relation.getOwnerName());
+                        System.out.println();
+                        tapd.setDealMan(relation.getOwnerName());
+                        tapd.setDept(relation.getDept());
+                        tapd.setLink(split[2]);
+                        tapd.setMark(split[1]);
+                        tapd.setRange(relation.getBelong());
+                        tapd.setTitle("【"+ env + "环境】"+ split[0] +" + "+ split[1] +" + 有错误");
+                        tapd.setNamespace(split[0]);
+                        tapds.add(tapd);
+                    } catch (Exception e) {
+                        System.out.println(mark);
+                        e.printStackTrace();
+                    }
                 }
             }
             driver.switchTo().window(mainWindow);
-        }
-
-        // print tapd info
-        for (String s : errorMarkAndNamespaceList) {
-            Tapd tapd = new Tapd();
-            String[] split = s.split(";");
-            Relation relation = project.get(split[1]);
-            System.out.println("【"+ env + "环境】"+ split[0] +" + "+ split[1] +" + 有错误");
-            System.out.println("处理人 " + relation.getOwnerName());
-            System.out.println("项目标识 " + split[1]);
-            System.out.println("所属部门 " + relation.getDept());
-            System.out.println("业务范围 " + relation.getBelong());
-            System.out.println("问题链接 " + split[2]);
-            System.out.println();
-            tapd.setDealMan(relation.getOwnerName());
-            tapd.setDept(relation.getDept());
-            tapd.setLink(split[2]);
-            tapd.setMark(split[1]);
-            tapd.setRange(relation.getBelong());
-            tapd.setTitle("【"+ env + "环境】"+ split[0] +" + "+ split[1] +" + 有错误");
-            tapd.setNamespace(split[0]);
-            tapds.add(tapd);
         }
         return tapds;
     }
