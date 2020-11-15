@@ -4,24 +4,24 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -45,21 +45,38 @@ public class SeleTest {
     
     public static void main(String[] args) {
         SeleTest seleTest = new SeleTest();
-        System.setProperty("webdriver.gecko.driver", "E:\\soft\\geckodriver/geckodriver.exe");
-//        System.setProperty("webdriver.gecko.driver", "/Users/xiao230/Desktop/soft/Firefox-driver/geckodriver");
+        String os = System.getenv().get("OS");
+        if (os.toUpperCase().contains("WINDOWS")) {
+            System.setProperty("webdriver.gecko.driver", "E:\\soft\\geckodriver/geckodriver.exe");
+            SeleTest.picPath = "C:\\Users\\Administrator\\Desktop\\tmp\\";
+        } else {
+            System.setProperty("webdriver.gecko.driver", "/Users/xiao230/Desktop/soft/Firefox-driver/geckodriver");
+            SeleTest.picPath = "/Users/xiao230/Desktop/tmp/";
+        }
 
-        WebDriver driver = new FirefoxDriver();
+        // 新建一个firefox浏览器实例,并设置headless,不显示浏览器的情况下运行程序
+        FirefoxBinary firefoxBinary = new FirefoxBinary();
+        firefoxBinary.addCommandLineOptions("--headless");
+        FirefoxOptions firefoxOptions = new FirefoxOptions();
+        firefoxOptions.setBinary(firefoxBinary);
+
+        WebDriver driver = new FirefoxDriver(firefoxOptions);
+        // dev test prod
+        String[] envs = {"test","dev","prod"};
+        for (String env : envs) {
+            seleTest.getErrorAndCreateTapd(driver, env);
+        }
+    }
+
+    private void getErrorAndCreateTapd(WebDriver driver, String env) {
         try {
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
-            // dev test prod
-            String env = "prod";
             // type is error or slow
             String type = "error";
-            SeleTest.picPath = "C:\\Users\\Administrator\\Desktop\\tmp\\" + env + "\\" + type + "\\";
-            List<Tapd> tapds = seleTest.getProject(driver, env, type);
+            SeleTest.picPath = SeleTest.picPath + env + "\\" + type + "\\";
+            List<Tapd> tapds = getProject(driver, env, type);
 
-            seleTest.tapc(driver, tapds, env);
+            tapc(driver, tapds, env);
 
             System.out.println("=================================================================");
             System.out.println("【"+ env +"环境】");
@@ -73,7 +90,6 @@ public class SeleTest {
                     System.out.println();
                 }
             });
-
 //            seleTest.getCookie(driver);
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,7 +161,7 @@ public class SeleTest {
                         bugCurrentOwner.click();
                         Thread.sleep(2000);
                         bugCurrentOwner.sendKeys(tapd.getDealMan());
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
                         // we need click some element to fill the input
                         driver.findElement(By.id("BugTitle")).click();
                         // set 所属部门 *
@@ -183,27 +199,32 @@ public class SeleTest {
                         Image image = ImageIO.read(new File(SeleTest.picPath + tapd.getMark() + ".png"));
                         //把图片路径复制到剪切板
                         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new ClipImage(image), null);
-                        //新建一个Robot类的对象
-                        Robot robot = new Robot();
-                        Thread.sleep(1000);
-                        // change line
 
-                        robot.keyPress(KeyEvent.VK_ENTER);
-                        robot.keyRelease(KeyEvent.VK_ENTER);
-                        Thread.sleep(1000);
-                        //按下Ctrl+V
-                        robot.keyPress(KeyEvent.VK_CONTROL);
-                        robot.keyPress(KeyEvent.VK_V);
-                        //释放Ctrl+V
-                        robot.keyRelease(KeyEvent.VK_V);
-                        robot.keyRelease(KeyEvent.VK_CONTROL);
-                        Thread.sleep(1000);
+//                        //新建一个Robot类的对象
+//                        Robot robot = new Robot();
+//                        Thread.sleep(1000);
+//                        // change line
+//                        robot.keyPress(KeyEvent.VK_ENTER);
+//                        robot.keyRelease(KeyEvent.VK_ENTER);
+//                        Thread.sleep(1000);
+//                        //按下Ctrl+V
+//                        robot.keyPress(KeyEvent.VK_CONTROL);
+//                        robot.keyPress(KeyEvent.VK_V);
+//                        //释放Ctrl+V
+//                        robot.keyRelease(KeyEvent.VK_V);
+//                        robot.keyRelease(KeyEvent.VK_CONTROL);
+//                        Thread.sleep(1000);
 
+                        Actions actions = new Actions(driver);
+                        actions.sendKeys(Keys.ENTER).build().perform();
+                        Thread.sleep(500);
+                        actions.keyDown(Keys.CONTROL).sendKeys("v").perform();
+                        Thread.sleep(500);
 
                         driver.switchTo().defaultContent();
                         // click the submit button
                         driver.findElement(By.xpath("//*[@id=\"_view\"]")).click();
-                        Thread.sleep(5000);
+                        Thread.sleep(2000);
 
                         String currentUrl = driver.getCurrentUrl();
                         tapd.setTapdUrl(currentUrl);
@@ -347,7 +368,7 @@ public class SeleTest {
                 String currentUrl = window.getCurrentUrl();
                 if (currentUrl.contains("resourceType")){
                     // get namespace and project mark
-                    WebElement projectInfo = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/div[2]/section/div/div[2]/div/div[1]/div[2]/div/span/div[2]"));
+                    WebElement projectInfo = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/div[2]/section/div/div[2]/div/div[1]/div[2]/div/span/span/div"));
                     String text = projectInfo.getText();
                     String[] split = text.split("\n")[0].split("/");
                     String namespace = split[0];
@@ -373,14 +394,14 @@ public class SeleTest {
                         Tapd tapd = new Tapd();
                         System.out.println("【"+ env + "环境】"+ split[0] +" + "+ split[1] +" + 有错误");
                         System.out.println("项目标识 " + split[1]);
-                        System.out.println("问题链接 " + split[2]);
+                        System.out.println("问题链接 " + currentUrl);
                         System.out.println("所属部门 " + relation.getDept());
                         System.out.println("业务范围 " + relation.getBelong());
                         System.out.println("处理人 " + relation.getOwnerName());
                         System.out.println();
                         tapd.setDealMan(relation.getOwnerName());
                         tapd.setDept(relation.getDept());
-                        tapd.setLink(split[2]);
+                        tapd.setLink(currentUrl);
                         tapd.setMark(split[1]);
                         tapd.setRange(relation.getBelong());
                         tapd.setTitle("【"+ env + "环境】"+ split[0] +" + "+ split[1] +" + 有错误");
