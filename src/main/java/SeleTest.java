@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 public class SeleTest {
     private static String picPath;
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
         SeleTest seleTest = new SeleTest();
         String os = System.getenv().get("OS");
         if (os.toUpperCase().contains("WINDOWS")) {
@@ -55,17 +55,23 @@ public class SeleTest {
         }
 
         // 新建一个firefox浏览器实例,并设置headless,不显示浏览器的情况下运行程序
-        FirefoxBinary firefoxBinary = new FirefoxBinary();
-        firefoxBinary.addCommandLineOptions("--headless");
-        FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setBinary(firefoxBinary);
+//        FirefoxBinary firefoxBinary = new FirefoxBinary();
+//        firefoxBinary.addCommandLineOptions("--headless");
+//        FirefoxOptions firefoxOptions = new FirefoxOptions();
+//        firefoxOptions.setBinary(firefoxBinary);
+//        WebDriver driver = new FirefoxDriver(firefoxOptions);
 
-        WebDriver driver = new FirefoxDriver(firefoxOptions);
+
+        WebDriver driver = new FirefoxDriver();
         // dev test prod
-        String[] envs = {"test","dev","prod"};
-        for (String env : envs) {
-            seleTest.getErrorAndCreateTapd(driver, env);
-        }
+//        String[] envs = {"test","dev","prod"};
+//        for (String env : envs) {
+//            seleTest.getErrorAndCreateTapd(driver, env);
+//        }
+
+        seleTest.getErrorAndCreateTapd(driver, "prod");
+
+//        seleTest.getCookie(driver);
     }
 
     private void getErrorAndCreateTapd(WebDriver driver, String env) {
@@ -90,7 +96,6 @@ public class SeleTest {
                     System.out.println();
                 }
             });
-//            seleTest.getCookie(driver);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
