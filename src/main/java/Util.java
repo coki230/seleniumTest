@@ -37,6 +37,8 @@ public class Util {
                 return "新媒体基础平台";
             case "新媒体基础平台标准互联开发组" :
                 return "新媒体基础平台";
+            case "行业应用开发技术支持部" :
+                return "行业应用开发技术支持部";
             default :
                 return "其他";
         }

@@ -488,14 +488,14 @@ CT数据同步服务	yj-ct-datasync-service	研发五部	蒋梦文	是	消防实
 海燕布控告警接收服务	ga-haiyan-dps	研发七部	王永辉	是	海燕
 海燕图片上传服务	ga-haiyan-pics	研发七部	王永辉	是	海燕
 海燕特征布控，以图布控告警服务	ga-haiyan-alarm	研发七部	王永辉	是	海燕
-违法模块	jt-illegal	研发七部	张弛	是	全域一体化
-算法仓库	jt-kstp-intelligent	研发七部	张弛	是	全域一体化
+违法模块	jt-illegal	研发七部	王永辉	是	全域一体化
+算法仓库	jt-kstp-intelligent	研发七部	王永辉	是	全域一体化
 检查站市级数据传输和核查业务服务	jt-kstp-forward	研发七部	杨健奇	是	智慧检查站
 智慧检查站（后端）	jt-kits-jcz-back	研发七部	王永辉	是	智慧检查站
 智慧交通第三方数据库数据接入服务	jt-kstp-receive-db	研发七部	姚瑞	是	海燕
 智慧检查站数据对接	jt-kits-jcz-data	研发七部	张跃锋	是	智慧检查站
 阿布扎比海燕接口服务	ga-hy-api	研发七部	葛厚宝	是	海燕
-出入城分析服务	jt-inout-city	研发七部	张弛	是	智慧检查站
+出入城分析服务	jt-inout-city	研发七部	王永辉	是	智慧检查站
 智慧交通大数据平台统计分析前端	jt-kstp-judge-front	研发七部	王永辉	是	全域一体化
 智慧交通缉查布控微服务	jt-disposition	研发七部	王永辉	是	智慧检查站
 检查站查控统计服务	jt-kcp-statistics	研发七部	肖强宏	是	智慧检查站
