@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 public class JustTest {
     public static void main(String[] args) throws AWTException, InterruptedException {
@@ -16,8 +17,9 @@ public class JustTest {
 //        robot.keyPress('V');
 //        robot.keyPress('E');
 
-        Thread.sleep(2000);
-        Clipboard systemSelection = Toolkit.getDefaultToolkit().getSystemSelection();
-        System.out.println(systemSelection);
+//        Thread.sleep(2000);
+//        Clipboard systemSelection = Toolkit.getDefaultToolkit().getSystemSelection();
+//        System.out.println(systemSelection);
+        DeleteFileUtil.deleteDirectory("C:\\Users\\Administrator\\Desktop\\tmp\\test");
     }
 }
