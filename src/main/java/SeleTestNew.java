@@ -6,7 +6,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -20,7 +19,6 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -61,27 +59,32 @@ public class SeleTestNew {
 
 
         WebDriver driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
         // dev test prod
 //        String[] envs = {"test","dev","prod"};
 //        for (String env : envs) {
 //            seleTest.getErrorAndCreateTapd(driver, env);
 //        }
 
-        seleTest.getErrorAndCreateTapd(driver, "test");
+        // type is error or slow
+        String type = "error";
+        String env = "prod";
+        SeleTestNew.picPath = SeleTestNew.picPath + env + "\\" + type + "\\";
+
+        List<Tapd> tapds = seleTest.getProject(driver, env, type);
+
+        seleTest.createTapd(driver, env, tapds);
+
+        // delete all old pic
+        DeleteFileUtil.deleteDirectory(SeleTestNew.picPath);
+
 
 //        seleTest.getCookie(driver);
     }
 
-    private void getErrorAndCreateTapd(WebDriver driver, String env) {
+    private void createTapd(WebDriver driver, String env, List<Tapd> tapds) {
         try {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            // type is error or slow
-            String type = "error";
-            SeleTestNew.picPath = SeleTestNew.picPath + env + "\\" + type + "\\";
-            List<Tapd> tapds = getProject(driver, env, type);
-
             tapc(driver, tapds, env);
-
             System.out.println("=================================================================");
             System.out.println("【"+ env +"环境】");
             tapds.forEach(tapd -> {
@@ -94,6 +97,7 @@ public class SeleTestNew {
                     System.out.println();
                 }
             });
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -351,91 +355,81 @@ public class SeleTestNew {
         }
         List<WebElement> elements = errorProject.findElements(By.xpath("./*"));
 
-        String mainWindow = driver.getWindowHandle();
         // click the error project to apm page
         for (int i = 0; i < elements.size(); i++) {
             // enter detail page
             WebElement detailPage = elements.get(i).findElement(By.cssSelector("span.can-click"));
-
-            if (i == 0) {
-                Thread.sleep(3000);
-                //使用显示等待，等待掩盖的div消失
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-                wait.until(ExpectedConditions.elementToBeClickable(detailPage));
-            }
-
+            Thread.sleep(1000);
             detailPage.click();
+        }
 
-            Set<String> windowHandles = driver.getWindowHandles();
-            // print wechar info
-            for (String windowHandle : windowHandles) {
-                WebDriver window = driver.switchTo().window(windowHandle);
-                // get namespace and project mark
-                String currentUrl = window.getCurrentUrl();
-                if (currentUrl.contains("monit_backend")){
-                    String namespace = "";
-                    String mark = "";
-                    String[] split = currentUrl.split("\\?");
-                    String[] split1 = split[1].split("&");
-                    for (String s : split1) {
-                        String[] split2 = s.split("=");
-                        if (split2[0].equals("mark")) {
-                            mark = split2[1];
-                        } else if (split2[0].equals("namespace")) {
-                            namespace = split2[1];
-                        }
-                    }
-                    Relation relation = project.get(mark);
-                    // capture the pic
-                    driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div/ul/div/a[2]")).click();
-                    String errorUrl = window.getCurrentUrl();
-                    File errorPicFile = new File(SeleTestNew.picPath + mark + ".png");
-                    // delete all old pic
-                    DeleteFileUtil.deleteDirectory(SeleTestNew.picPath);
-                    if (!errorPicFile.getParentFile().exists()) {
-                        errorPicFile.getParentFile().mkdirs();
-                    }
-                    errorPicFile.createNewFile();
-                    captureElement(errorPicFile, driver);
-                    driver.close();
-
-                    try {
-                        Tapd tapd = new Tapd();
-                        System.out.println("【"+ env + "环境】"+ namespace +" + "+ mark +" + 有错误");
-                        System.out.println("项目标识 " + mark);
-                        System.out.println("问题链接 " + errorUrl);
-                        System.out.println("所属部门 " + relation.getDept());
-                        System.out.println("业务范围 " + relation.getBelong());
-                        System.out.println("处理人 " + relation.getOwnerName());
-                        System.out.println();
-                        tapd.setDealMan(relation.getOwnerName());
-                        tapd.setDept(relation.getDept());
-                        tapd.setLink(errorUrl);
-                        tapd.setMark(split[1]);
-                        tapd.setRange(relation.getBelong());
-                        tapd.setTitle("【"+ env + "环境】"+ namespace +" + "+ mark +" + 有错误");
-                        tapd.setNamespace(namespace);
-                        tapds.add(tapd);
-                    } catch (Exception e) {
-                        System.out.println(mark);
-                        e.printStackTrace();
+        Set<String> windowHandles = driver.getWindowHandles();
+        for (String windowHandle : windowHandles) {
+            driver.switchTo().window(windowHandle);
+            // get namespace and project mark
+            String currentUrl = driver.getCurrentUrl();
+            if (currentUrl.contains("monit_backend")){
+                String namespace = "";
+                String mark = "";
+                String[] split = currentUrl.split("\\?");
+                String[] split1 = split[1].split("&");
+                for (String s : split1) {
+                    String[] split2 = s.split("=");
+                    if (split2[0].equals("mark")) {
+                        mark = split2[1];
+                    } else if (split2[0].equals("namespace")) {
+                        namespace = split2[1];
                     }
                 }
+                Relation relation = project.get(mark);
+                // wait to get all info
+                Thread.sleep(2000);
+                // 点击接口，跳转到接口标签页面
+                WebElement element = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div/ul/div/a[2]"));
+                //使用显示等待，等待掩盖的div消失
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+                wait.until(ExpectedConditions.elementToBeClickable(element));
+                element.click();
+                // wait to get all info
+                Thread.sleep(2000);
+                String errorUrl = driver.getCurrentUrl();
+                File errorPicFile = new File(SeleTestNew.picPath + mark + ".png");
+                if (!errorPicFile.getParentFile().exists()) {
+                    errorPicFile.getParentFile().mkdirs();
+                }
+                errorPicFile.createNewFile();
+                captureElement(errorPicFile, driver);
+                driver.close();
+
+                try {
+                    Tapd tapd = new Tapd();
+                    System.out.println("【"+ env + "环境】"+ namespace +" + "+ mark +" + 有错误");
+                    System.out.println("项目标识 " + mark);
+                    System.out.println("问题链接 " + errorUrl);
+                    System.out.println("所属部门 " + relation.getDept());
+                    System.out.println("业务范围 " + relation.getBelong());
+                    System.out.println("处理人 " + relation.getOwnerName());
+                    System.out.println();
+                    tapd.setDealMan(relation.getOwnerName());
+                    tapd.setDept(relation.getDept());
+                    tapd.setLink(errorUrl);
+                    tapd.setMark(mark);
+                    tapd.setRange(relation.getBelong());
+                    tapd.setTitle("【"+ env + "环境】"+ namespace +" + "+ mark +" + 有错误");
+                    tapd.setNamespace(namespace);
+                    tapds.add(tapd);
+                } catch (Exception e) {
+                    System.out.println(mark);
+                    e.printStackTrace();
+                }
             }
-            driver.switchTo().window(mainWindow);
         }
         return tapds;
     }
 
-    private File captureElement(File screenshot, WebDriver driver){
-        try {
-            // wait to get all info
-            Thread.sleep(6000);
-            File srcfile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(srcfile, screenshot);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+    private File captureElement(File screenshot, WebDriver driver) throws IOException {
+        File srcfile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(srcfile, screenshot);
         return screenshot;
     }
 
