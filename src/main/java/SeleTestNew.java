@@ -115,6 +115,7 @@ public class SeleTestNew {
 
     private void tapc(WebDriver driver, List<Tapd> tapds, String env) throws InterruptedException, IOException, AWTException {
 
+        Thread.sleep(2000);
         driver.get("https://www.tapd.cn/51894879/bugtrace/bugreports/my_view");
 
         setCookie(driver);
@@ -317,8 +318,9 @@ public class SeleTestNew {
         Map<String, Relation> projectInfo = getProjectInfo();
 
         driver.get("https://dolphin-"+ env +".kedacom.com/dashboard/#/service/dashboard");
-
+        String mainWindow = driver.getWindowHandle();
         List<Tapd> tapdList = getInfo(driver, type, projectInfo, env);
+        driver.switchTo().window(mainWindow);
         String s = JSON.toJSONString(tapdList);
         saveData(s, "tapdList.txt");
         return tapdList;

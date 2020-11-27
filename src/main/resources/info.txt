@@ -156,14 +156,14 @@ tapd内部统计系统前端	ty-tapd-internal-front	研发三部	刘双岩	是	�
 统一推送后台管理 - 后端	ty-ups-backend	研发四部	石小娟	是	移动警务
 统一推送后台管理 - 前端web	ty-ups-web	研发四部	石小娟	是	移动警务
 执法规范化中移动项目	ty-ps-cvf-font-cmcc	Web开发组	韦森	是	执法规范化平台
-中移动调度器	ty-admin-cmcc	公共应用技术部应用组	陶文超	是	执法规范化平台
+中移动调度器	ty-admin-cmcc	研发四部	陶文超	是	执法规范化平台
 统一推送 - 接收服务	ty-ups-receiver	研发四部	石小娟	是	移动警务
 统一推送 - 分发服务	ty-ups-dispatcher	研发四部	石小娟	是	移动警务
 统一推送 - 监控服务	ty-ups-monitor	研发四部	石小娟	是	移动警务
 统一推送 - 移动终端TCP	ty-ups-tcp-mobile	研发四部	石小娟	是	移动警务
 统一推送 - PC端TCP	ty-ups-tcp-pc	研发四部	石小娟	是	移动警务
-中移动执行器	ty-executor-cmcc	公共应用技术部应用组	陶文超	是	执法规范化平台
-中移动执法平台	ty-cvf-cmcc	公共应用技术部应用组	陶文超	是	执法规范化平台
+中移动执行器	ty-executor-cmcc	研发四部	陶文超	是	执法规范化平台
+中移动执法平台	ty-cvf-cmcc	研发四部	陶文超	是	执法规范化平台
 消息助手后端服务	ga-pc-mgr-backend	研发四部	陈晓栋	是	移动警务
 消息助手前端服务	ga-pc-mgr-frontend	研发四部	陈晓栋	是	移动警务
 统一推送 - 消息处理服务	ty-ups-message	研发四部	石小娟	是	移动警务
@@ -207,12 +207,12 @@ tapd内部统计系统前端	ty-tapd-internal-front	研发三部	刘双岩	是	�
 智慧街面巡防综合服务	ga-patrol-mult	研发四部	韦道蓝(weidaolan)	是	智慧街面巡防
 地图看视频	ydjw-ezview	研发二部	陈晓栋	是	移动警务
 智慧城市app后端服务	smartcity-app-backend	研发二部	陈晓栋	是	移动警务
-device-dms	device-dms	公共应用技术部应用组	陶文超	是	执法规范化平台
+device-dms	device-dms	研发四部	陶文超	是	执法规范化平台
 flume数据清洗	cvf-flume-video	公共应用技术部应用组	刘强	是	执法规范化平台
 音视频-定时器-创建数据	cvf-schedule-data	公共应用技术部应用组	丁松林	是	执法规范化平台
 cdevice-master-ws-admin	cd-m-w-admin	微服务组	丁松林	是	执法规范化平台
 cdevice-master-ws-client	cdevice-m-w-c	微服务组	丁松林	是	执法规范化平台
-音视频	cvf	公共应用技术部应用组	陶文超	是	执法规范化平台
+音视频	cvf	研发四部	陶文超	是	执法规范化平台
 音视频前端	cvf-front	产品开发组	傅文彬(fuwenbin)	是	执法规范化平台
 人员安全服务	csep	微服务组	吴成洋	是	执法规范化平台
 cdevice-dms	cdevice-dms	微服务组	唐金旗	是	执法规范化平台
@@ -233,7 +233,7 @@ MDM移动后端	mdm-mobile-backend	研发二部	陈晓栋	是	移动警务
 科达MDM移动警务管控平台手机端	kd-mdm-frontend	研发四部	石小娟	是	移动警务
 科达MDM移动警务管控平台后端	kd-mdm-backend	研发四部	石小娟	是	移动警务
 科达MDM移动警务管控平台前端	kd-mdm-web	研发四部	石小娟	是	移动警务
-device_ws_client	device-ws-client	公共应用技术部应用组	陶文超	是	移动警务
+device_ws_client	device-ws-client	研发四部	陶文超	是	移动警务
 移动警务消息总线	kd-message-router	研发二部	陈晓栋	是	移动警务
 特勤保障后端	safety-guarantee-backend	研发四部	石小娟	是	移动警务
 特勤保障前端	safety-guarantee-web	研发四部	石小娟	是	移动警务
@@ -494,7 +494,7 @@ CT数据同步服务	yj-ct-datasync-service	研发五部	蒋梦文	是	消防实
 智慧检查站（后端）	jt-kits-jcz-back	研发七部	王永辉	是	智慧检查站
 智慧交通第三方数据库数据接入服务	jt-kstp-receive-db	研发七部	姚瑞	是	海燕
 智慧检查站数据对接	jt-kits-jcz-data	研发七部	张跃锋	是	智慧检查站
-阿布扎比海燕接口服务	ga-hy-api	研发七部	葛厚宝	是	海燕
+阿布扎比海燕接口服务	ga-hy-api	研发七部	黄威	是	海燕
 出入城分析服务	jt-inout-city	研发七部	王永辉	是	智慧检查站
 智慧交通大数据平台统计分析前端	jt-kstp-judge-front	研发七部	王永辉	是	全域一体化
 智慧交通缉查布控微服务	jt-disposition	研发七部	王永辉	是	智慧检查站
@@ -701,7 +701,7 @@ GPS信息推发送服务	jt-kstp-gps	研发八部	张云海	是	全域一体化
 沈阳交警勤务系统 - 前端	syjjqw-frontend-new	研发三部	刘双岩	是	交通
 智能运维-庆阳可视化定制	ioms-visualqy	研发一部	凌长明	是	运维平台
 智慧街道综治安防系统	kapc-backend	研发一部	丁成根	是	综治
-勤务一体化（后端）	kipa-backend	研发一部	丁成根	是	综治
+勤务一体化（后端）	kipa-backend	研发一部	杲宁	是	综治
 江苏边检智能精准管控平台_任务调度管理端	ga-kdbd-job	研发一部	张丙胜	是	边检
 云平台运维_视图库_后端	ty-cloud-ops-viid-back	研发一部	凌长明	是	运维平台
 苏州政法委网格化_任务调度	ty-zfwdg-jobscheduler	研发一部	张跃锋	是	综治
