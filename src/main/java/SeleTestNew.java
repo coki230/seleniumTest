@@ -57,46 +57,45 @@ public class SeleTestNew {
 //        firefoxOptions.setBinary(firefoxBinary);
 //        WebDriver driver = new FirefoxDriver(firefoxOptions);
 
-
         WebDriver driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
-        // dev test prod
-//        String[] envs = {"test","dev","prod"};
-//        for (String env : envs) {
-//            seleTest.getErrorAndCreateTapd(driver, env);
-//        }
-
-        // type is error or slow
+//        // type is error or slow
         String type = "error";
-        String env = "prod";
-        SeleTestNew.picPath = SeleTestNew.picPath + env + "\\" + type + "\\";
 
-        List<Tapd> tapds = seleTest.getProject(driver, env, type);
+        List<Tapd> AllTapd = new ArrayList<>();
+        String[] envs = {"test","dev","prod"};
+        for (String env : envs) {
+            List<Tapd> tapds = seleTest.getProject(driver, env, type);
+            AllTapd.addAll(tapds);
+        }
 
-        seleTest.createTapd(driver, env, tapds);
-
+        seleTest.createTapd(driver, AllTapd);
+//
         // delete all old pic
         DeleteFileUtil.deleteDirectory(SeleTestNew.picPath);
-
 
 //        seleTest.getCookie(driver);
     }
 
-    private void createTapd(WebDriver driver, String env, List<Tapd> tapds) {
+    private void createTapd(WebDriver driver, List<Tapd> tapds) {
         try {
-            tapc(driver, tapds, env);
+            tapc(driver, tapds);
             System.out.println("=================================================================");
-            System.out.println("【"+ env +"环境】");
-            tapds.forEach(tapd -> {
+            String lastEnv = "";
+            for (Tapd tapd : tapds) {
                 if (tapd.getTapdUrl() != null && !tapd.getTapdUrl().contains("add")) {
+                    if (!lastEnv.equals(tapd.getEnv())) {
+                        System.out.println("【"+ tapd.getEnv() +"环境】");
+                    }
                     System.out.println("空间：" + tapd.getNamespace());
                     System.out.println("服务：" + tapd.getMark());
                     System.out.println("责任人：@" + tapd.getDealMan());
                     System.out.println("问题简述:  有错误");
                     System.out.println("tapd地址：" + tapd.getTapdUrl());
                     System.out.println();
+                    lastEnv = tapd.getEnv();
                 }
-            });
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +112,7 @@ public class SeleTestNew {
         writeCookie(driver);
     }
 
-    private void tapc(WebDriver driver, List<Tapd> tapds, String env) throws InterruptedException, IOException, AWTException {
+    private void tapc(WebDriver driver, List<Tapd> tapds) throws InterruptedException, IOException, AWTException {
 
         Thread.sleep(2000);
         driver.get("https://www.tapd.cn/51894879/bugtrace/bugreports/my_view");
@@ -121,7 +120,7 @@ public class SeleTestNew {
         setCookie(driver);
         driver.navigate().refresh();
         Thread.sleep(2000);
-        createTapd(driver,tapds, env);
+        createTapdBase(driver,tapds);
     }
 
     private void hoverAndClick(WebDriver driver, WebElement webElement) throws InterruptedException {
@@ -132,7 +131,7 @@ public class SeleTestNew {
         actions.moveToElement(webElement).clickAndHold().click().perform();
     }
 
-    private void createTapd(WebDriver driver, List<Tapd> tapds, String env) throws InterruptedException {
+    private void createTapdBase(WebDriver driver, List<Tapd> tapds) throws InterruptedException {
         String mainWindow = driver.getWindowHandle();
         for (Tapd tapd : tapds) {
             // create new button
@@ -159,10 +158,10 @@ public class SeleTestNew {
                         // set 混合云环境 *
                         WebElement envWebElement = driver.findElement(By.xpath("//*[@id=\"BugCustomFieldThreeDiv\"]/div/div"));
                         envWebElement.click();
-                        if (env.equals("prod")) {
+                        if (tapd.getEnv().equals("prod")) {
                             hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='prod_kl']")));
                         } else {
-                            hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ env +"']")));
+                            hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ tapd.getEnv() +"']")));
                         }
                         // set 处理人
                         WebElement bugCurrentOwner = driver.findElement(By.id("BugCurrentOwnerValue"));
@@ -206,7 +205,7 @@ public class SeleTestNew {
                         hoverAndClick(driver, pic);
 
                         //指定图片路径
-                        Image image = ImageIO.read(new File(SeleTestNew.picPath + tapd.getMark() + ".png"));
+                        Image image = ImageIO.read(new File(SeleTestNew.picPath  + tapd.getEnv() + "\\" + tapd.getType() + "\\" + tapd.getMark() + ".png"));
                         //把图片路径复制到剪切板
                         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new ClipImage(image), null);
 
@@ -345,10 +344,12 @@ public class SeleTestNew {
 
     private List<Tapd> getInfo(WebDriver driver, String type, Map<String, Relation> project, String env) throws IOException, InterruptedException {
         List<Tapd> tapds = new ArrayList<>();
+        Thread.sleep(2000);
         // find apm
         driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/div[2]/section/div/ul/li[3]")).click();
         // find error project
         WebElement errorProject;
+        Thread.sleep(2000);
         if (type.equals("error")) {
             errorProject = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/section/div/div[6]/div/div[3]/div/div/div/div[2]/div[1]/div[2]/div/div/div[3]/table/tbody"));
         } else {
@@ -395,7 +396,7 @@ public class SeleTestNew {
                 // wait to get all info
                 Thread.sleep(2000);
                 String errorUrl = driver.getCurrentUrl();
-                File errorPicFile = new File(SeleTestNew.picPath + mark + ".png");
+                File errorPicFile = new File(SeleTestNew.picPath + env + "\\" + type + "\\" + mark + ".png");
                 if (!errorPicFile.getParentFile().exists()) {
                     errorPicFile.getParentFile().mkdirs();
                 }
@@ -419,6 +420,8 @@ public class SeleTestNew {
                     tapd.setRange(relation.getBelong());
                     tapd.setTitle("【"+ env + "环境】"+ namespace +" + "+ mark +" + 有错误");
                     tapd.setNamespace(namespace);
+                    tapd.setEnv(env);
+                    tapd.setType(type);
                     tapds.add(tapd);
                 } catch (Exception e) {
                     System.out.println(mark);

@@ -6,6 +6,24 @@ public class Tapd {
     private String mark;
     private String namespace;
     private String tapdUrl;
+    private String env;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getEnv() {
+        return env;
+    }
+
+    public void setEnv(String env) {
+        this.env = env;
+    }
 
     public String getTapdUrl() {
         return tapdUrl;
