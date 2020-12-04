@@ -11,8 +11,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -27,7 +25,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -198,7 +195,7 @@ public class SeleTestNew {
                         // url
                         WebElement url = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
                         jsExecutor.executeScript("arguments[0].innerHTML = '1、问题截图<br><font color=\"red\"><strong>请修改状态到“待验证”，并指定给创建人。由创建人关闭，否则不要指定给创建人验证。</strong></font>" +
-                                "<br><font color=\"red\"><strong>错误数可以用页面的“错误数”排序，并且需要切换“接口”，“内部调用”，“外部调用”查看所有报错信息</strong></font>" +
+                                "<br><font color=\"red\"><strong>请关注页面错误数，点击可以查看详情，错误数可以用页面的“错误数”排序，并且需要切换“接口”，“内部调用”，“外部调用”查看所有报错信息</strong></font>" +
                                 "<br>"+ tapd.getLink() +"'", url);
                         // 问题截图
                         WebElement pic = driver.findElement(By.xpath("/html/body/div[1]/div[3]"));
@@ -365,6 +362,8 @@ public class SeleTestNew {
             Thread.sleep(1000);
             detailPage.click();
         }
+        // 等待页面加载
+        Thread.sleep(2000);
 
         Set<String> windowHandles = driver.getWindowHandles();
         for (String windowHandle : windowHandles) {
@@ -385,16 +384,17 @@ public class SeleTestNew {
                     }
                 }
                 Relation relation = project.get(mark);
-                // wait to get all info
-                Thread.sleep(2000);
-                // 点击接口，跳转到接口标签页面
-                WebElement element = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div/ul/div/a[2]"));
-                //使用显示等待，等待掩盖的div消失
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-                wait.until(ExpectedConditions.elementToBeClickable(element));
-                element.click();
-                // wait to get all info
-                Thread.sleep(2000);
+                // 不需要在接口页面截图，直接显示首页
+//                // wait to get all info
+//                Thread.sleep(2000);
+//                // 点击接口，跳转到接口标签页面
+//                WebElement element = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div/ul/div/a[2]"));
+//                //使用显示等待，等待掩盖的div消失
+//                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+//                wait.until(ExpectedConditions.elementToBeClickable(element));
+//                element.click();
+//                // wait to get all info
+//                Thread.sleep(2000);
                 String errorUrl = driver.getCurrentUrl();
                 File errorPicFile = new File(SeleTestNew.picPath + env + "\\" + type + "\\" + mark + ".png");
                 if (!errorPicFile.getParentFile().exists()) {
