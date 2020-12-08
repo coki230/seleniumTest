@@ -850,3 +850,5 @@ prod环境视图库演示	ty-viid-gateway	视图资源开发部测试组	朱曹�
 商用视图库-vnat	viid-vnat	视图资源开发部测试组	陈明	是	视图库
 商用视图库-vcmp	viid-vcmp	视图资源开发部测试组	陈明	是	视图库
 商用视图库_vudm	viid-vudm	视图资源开发部测试组	陈明	是	视图库
+智能解析中台服务注册	ty-kaip-register	云计算开发部平台开发组	周祥	是	其他
+智能解析中台_服务调度	ty-kaip-analysis	云计算开发部平台开发组	周祥	是	其他

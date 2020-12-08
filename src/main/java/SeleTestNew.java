@@ -1,6 +1,5 @@
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
@@ -37,37 +36,40 @@ public class SeleTestNew {
     private static String picPath;
     
     public static void main(String[] args) throws IOException, InterruptedException {
+        Thread.sleep(6000);
         SeleTestNew seleTest = new SeleTestNew();
         String os = System.getenv().get("OS");
+        System.out.println(os);
         if (os.toUpperCase().contains("WINDOWS")) {
-            System.setProperty("webdriver.gecko.driver", "E:\\soft\\geckodriver/geckodriver.exe");
+            System.setProperty("webdriver.gecko.driver", "E:\\soft\\geckodriver\\geckodriver.exe");
+            System.setProperty("webdriver.firefox.bin", "C:\\Program Files\\Mozilla Firefox\\firefox.exe");
             SeleTestNew.picPath = "C:\\Users\\Administrator\\Desktop\\tmp\\";
         } else {
             System.setProperty("webdriver.gecko.driver", "/Users/xiao230/Desktop/soft/Firefox-driver/geckodriver");
             SeleTestNew.picPath = "/Users/xiao230/Desktop/tmp/";
         }
+        System.out.println(System.getProperty("webdriver.gecko.driver"));
 
         // 新建一个firefox浏览器实例,并设置headless,不显示浏览器的情况下运行程序
 //        FirefoxBinary firefoxBinary = new FirefoxBinary();
 //        firefoxBinary.addCommandLineOptions("--headless");
 //        FirefoxOptions firefoxOptions = new FirefoxOptions();
 //        firefoxOptions.setBinary(firefoxBinary);
+//        firefoxOptions.setLogLevel(FirefoxDriverLogLevel.DEBUG);
 //        WebDriver driver = new FirefoxDriver(firefoxOptions);
 
         WebDriver driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
-//        // type is error or slow
-        String type = "error";
 
+        // type is error or slow
+        String type = "error";
         List<Tapd> AllTapd = new ArrayList<>();
         String[] envs = {"test","dev","prod"};
         for (String env : envs) {
             List<Tapd> tapds = seleTest.getProject(driver, env, type);
             AllTapd.addAll(tapds);
         }
-
         seleTest.createTapd(driver, AllTapd);
-//
         // delete all old pic
         DeleteFileUtil.deleteDirectory(SeleTestNew.picPath);
 
@@ -233,6 +235,11 @@ public class SeleTestNew {
                         Thread.sleep(2000);
 
                         String currentUrl = driver.getCurrentUrl();
+                        // 如果连接没有跳转到保存成功页面，等待，直到获得成功页面
+                        while (currentUrl.contains("add")) {
+                            Thread.sleep(2000);
+                            currentUrl = driver.getCurrentUrl();
+                        }
                         tapd.setTapdUrl(currentUrl);
                         driver.close();
                     }
@@ -262,7 +269,6 @@ public class SeleTestNew {
             return DataFlavor.imageFlavor.equals(flavor);
         }
 
-        @NotNull
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (!DataFlavor.imageFlavor.equals(flavor)) {
@@ -363,7 +369,7 @@ public class SeleTestNew {
             detailPage.click();
         }
         // 等待页面加载
-        Thread.sleep(2000);
+        Thread.sleep(10000);
 
         Set<String> windowHandles = driver.getWindowHandles();
         for (String windowHandle : windowHandles) {
