@@ -177,7 +177,13 @@ public class SeleTestNew {
                         // set 业务范围 *
                         WebElement bugCustomFieldFive = driver.findElement(By.xpath("//*[@id=\"BugCustomFieldFiveDiv\"]/div/div"));
                         bugCustomFieldFive.click();
-                        hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ tapd.getRange() +"']")));
+                        try {
+                            hoverAndClick(driver, driver.findElement(By.xpath("//td[@title='"+ tapd.getRange() +"']")));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.out.println(tapd.toString());
+                            continue;
+                        }
                         // set 项目标识 *
                         driver.findElement(By.id("BugCustomFieldTwo")).sendKeys(tapd.getMark());
                         // set 问题分类 *
@@ -198,6 +204,7 @@ public class SeleTestNew {
                         WebElement url = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
                         jsExecutor.executeScript("arguments[0].innerHTML = '1、问题截图<br><font color=\"red\"><strong>请修改状态到“待验证”，并指定给创建人。由创建人关闭，否则不要指定给创建人验证。</strong></font>" +
                                 "<br><font color=\"red\"><strong>请关注页面错误数，点击可以查看详情，错误数可以用页面的“错误数”排序，并且需要切换“接口”，“内部调用”，“外部调用”查看所有报错信息</strong></font>" +
+                                "<br><font color=\"red\"><strong>如果项目在测试阶段或其他特殊阶段，可以邮件申请项目不需要巡检。</strong></font>" +
                                 "<br>"+ tapd.getLink() +"'", url);
                         // 问题截图
                         WebElement pic = driver.findElement(By.xpath("/html/body/div[1]/div[3]"));
@@ -236,8 +243,8 @@ public class SeleTestNew {
 
                         String currentUrl = driver.getCurrentUrl();
                         // 如果连接没有跳转到保存成功页面，等待，直到获得成功页面
-                        while (currentUrl.contains("add")) {
-                            Thread.sleep(2000);
+                        if (currentUrl.contains("add")) {
+                            Thread.sleep(5000);
                             currentUrl = driver.getCurrentUrl();
                         }
                         tapd.setTapdUrl(currentUrl);

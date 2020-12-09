@@ -90,4 +90,20 @@ public class Tapd {
     public void setMark(String mark) {
         this.mark = mark;
     }
+
+    @Override
+    public String toString() {
+        return "Tapd{" +
+                "title='" + title + '\'' +
+                ", dealMan='" + dealMan + '\'' +
+                ", dept='" + dept + '\'' +
+                ", range='" + range + '\'' +
+                ", mark='" + mark + '\'' +
+                ", namespace='" + namespace + '\'' +
+                ", tapdUrl='" + tapdUrl + '\'' +
+                ", env='" + env + '\'' +
+                ", type='" + type + '\'' +
+                ", link='" + link + '\'' +
+                '}';
+    }
 }
