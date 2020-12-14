@@ -1,3 +1,5 @@
+package tapd;
+
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -8,7 +10,10 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 
 import javax.imageio.ImageIO;
@@ -39,7 +44,8 @@ public class SeleTestNew {
         Thread.sleep(6000);
         SeleTestNew seleTest = new SeleTestNew();
         String os = System.getenv().get("OS");
-        System.out.println(os);
+        System.setProperty("sun.boot.library.path", "C:\\Java\\jdk1.8.0_271\\jre\\bin");
+//        System.out.println(System.getProperties());
         if (os.toUpperCase().contains("WINDOWS")) {
             System.setProperty("webdriver.gecko.driver", "E:\\soft\\geckodriver\\geckodriver.exe");
             System.setProperty("webdriver.firefox.bin", "C:\\Program Files\\Mozilla Firefox\\firefox.exe");
@@ -56,6 +62,7 @@ public class SeleTestNew {
 //        FirefoxOptions firefoxOptions = new FirefoxOptions();
 //        firefoxOptions.setBinary(firefoxBinary);
 //        firefoxOptions.setLogLevel(FirefoxDriverLogLevel.DEBUG);
+//        firefoxOptions.setBinary("C:\\Program Files\\Mozilla Firefox\\firefox.exe");
 //        WebDriver driver = new FirefoxDriver(firefoxOptions);
 
         WebDriver driver = new FirefoxDriver();

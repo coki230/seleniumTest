@@ -604,7 +604,7 @@ GPS信息推发送服务	jt-kstp-gps	研发八部	张云海	是	全域一体化
 疫情防控监督管理平台	jd-edrp-front	研发一部	丁成根	是	综治
 厦门数据推送	ty-data-join-viid-kddu	研发一部	沈黄健	是	视图库
 智能运维微信公众号项目	ty-ioms-wechatpa	研发一部	凌长明	是	运维平台
-智慧检查站（后端）	jt-kits-jcz-back	研发一部	王永辉	是	智慧检查站
+智慧检查站（后端）	jt-kits-jcz-back	研发七部	王永辉	是	智慧检查站
 智能运维自定义可视化后端	ty-ioms-cvisual-back	研发一部	凌长明(lingchangming)	是	运维平台
 智慧检查站数据对接	jt-kits-jcz-data	研发一部	王永辉	是	智慧检查站
 江苏边检智能精准管控平台前端	ga-samcp-front	研发一部	曾智琦	是	边检

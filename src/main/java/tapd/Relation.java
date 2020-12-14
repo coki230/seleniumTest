@@ -1,3 +1,5 @@
+package tapd;
+
 public class Relation {
     private String projectName;
     private String mark;

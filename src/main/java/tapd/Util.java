@@ -1,3 +1,5 @@
+package tapd;
+
 public class Util {
     public static String getTapdDept(String dept) {
         switch(dept){
