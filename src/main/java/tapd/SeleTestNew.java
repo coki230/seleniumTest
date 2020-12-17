@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,12 +40,12 @@ import java.util.concurrent.TimeUnit;
 
 public class SeleTestNew {
     private static String picPath;
+    // 申请延期的项目，不需要巡检
+    private String[] delayProject = {"yuanqu-ezview-backend-dl"};
     
     public static void main(String[] args) throws IOException, InterruptedException {
-        Thread.sleep(6000);
         SeleTestNew seleTest = new SeleTestNew();
         String os = System.getenv().get("OS");
-        System.setProperty("sun.boot.library.path", "C:\\Java\\jdk1.8.0_271\\jre\\bin");
 //        System.out.println(System.getProperties());
         if (os.toUpperCase().contains("WINDOWS")) {
             System.setProperty("webdriver.gecko.driver", "E:\\soft\\geckodriver\\geckodriver.exe");
@@ -383,7 +384,7 @@ public class SeleTestNew {
             detailPage.click();
         }
         // 等待页面加载
-        Thread.sleep(10000);
+        Thread.sleep(20000);
 
         Set<String> windowHandles = driver.getWindowHandles();
         for (String windowHandle : windowHandles) {
@@ -442,7 +443,11 @@ public class SeleTestNew {
                     tapd.setNamespace(namespace);
                     tapd.setEnv(env);
                     tapd.setType(type);
-                    tapds.add(tapd);
+                    if (Arrays.asList(delayProject).contains(mark)) {
+                        System.out.println("申请延期，不想要巡检。项目标识为：" + mark);
+                    } else {
+                        tapds.add(tapd);
+                    }
                 } catch (Exception e) {
                     System.out.println(mark);
                     e.printStackTrace();
