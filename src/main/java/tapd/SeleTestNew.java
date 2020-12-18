@@ -190,6 +190,7 @@ public class SeleTestNew {
                         } catch (Exception e) {
                             e.printStackTrace();
                             System.out.println(tapd.toString());
+                            driver.close();
                             continue;
                         }
                         // set 项目标识 *
