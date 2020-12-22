@@ -45,6 +45,10 @@ public class Util {
                 return "新媒体基础平台";
             case "云计算开发部平台开发组" :
                 return "云计算平台";
+            case "业务开发组" :
+                return "云平台产品部";
+            case "创新资源中心Web前端技术部" :
+                return "创新资源中心软件技术中心";
             default :
                 return "其他";
         }

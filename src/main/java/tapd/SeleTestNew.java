@@ -72,7 +72,7 @@ public class SeleTestNew {
         // type is error or slow
         String type = "error";
         List<Tapd> AllTapd = new ArrayList<>();
-        String[] envs = {"test","dev","prod"};
+        String[] envs = {"prod"};
         for (String env : envs) {
             List<Tapd> tapds = seleTest.getProject(driver, env, type);
             AllTapd.addAll(tapds);
@@ -243,7 +243,7 @@ public class SeleTestNew {
                         actions.sendKeys(Keys.ENTER).build().perform();
                         Thread.sleep(500);
                         actions.keyDown(Keys.CONTROL).sendKeys("v").perform();
-                        Thread.sleep(500);
+                        Thread.sleep(2000);
 
                         driver.switchTo().defaultContent();
                         // click the submit button
@@ -261,6 +261,7 @@ public class SeleTestNew {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    System.out.println(tapd.toString());
                     driver.close();
                 }
             }

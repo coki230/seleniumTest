@@ -543,7 +543,7 @@ kstp_data_gateway	jt-kstp-data-gateway	研发八部	金洋	是	全域一体化
 智慧交通大数据平台前端_项目现场预发布	jt-kstp-front-pre	研发八部	常展程	是	全域一体化
 智慧交通大数据平台诱导发布服务	jt-kstp-guidance	研发八部	常展程	是	全域一体化
 信号机整合对接服务	jt-light-adapter	研发八部	黄伟	是	全域一体化
-违法模块	jt-illegal	研发八部	常展程	是	全域一体化
+违法模块	jt-illegal	研发八部	金洋	是	全域一体化
 算法仓库	jt-kstp-intelligent	研发八部	王永辉	是	全域一体化
 违法智能分析	jt-ianalysis	研发八部	黄伟	是	全域一体化
 智能交通大数据-违法合图	jt-illegal-img-gather	研发八部	马志远	是	全域一体化
@@ -566,7 +566,7 @@ GPS信息推发送服务	jt-kstp-gps	研发八部	张云海	是	全域一体化
 智慧交通大数据平台缓存服务	kstp-cache	研发八部	姚瑞	是	全域一体化
 布控报警车牌统计服务	kstp-disposition-statistics	研发八部	王永辉	是	全域一体化
 违法相关业务	illegal	研发八部	王永辉	是	全域一体化
-指挥调度独立模块	kstp-direct-dispatch-service	研发八部	常展程	是	全域一体化
+指挥调度独立模块	kstp-direct-dispatch-service	研发八部	金洋	是	全域一体化
 智能交通大数据-警情研判	alert-analyze-service	研发八部	黄伟	是	全域一体化
 分析研判后台独立服务	kstp-analysis-judgement-service	研发八部	常展程	是	全域一体化
 奉贤区雪亮工程门户（前端）	jd-fxsp-portal	研发一部	杲宁	是	综治
