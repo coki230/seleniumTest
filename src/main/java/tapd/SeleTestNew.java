@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 public class SeleTestNew {
     private static String picPath;
     // 申请延期的项目，不需要巡检
-    private String[] delayProject = {"yuanqu-ezview-backend-dl"};
+    private String[] delayProject = {"yuanqu-ezview-backend-dl", "ty-kdypos-service"};
     
     public static void main(String[] args) throws IOException, InterruptedException {
         SeleTestNew seleTest = new SeleTestNew();
@@ -72,7 +72,7 @@ public class SeleTestNew {
         // type is error or slow
         String type = "error";
         List<Tapd> AllTapd = new ArrayList<>();
-        String[] envs = {"prod"};
+        String[] envs = {"test","dev","prod"};
         for (String env : envs) {
             List<Tapd> tapds = seleTest.getProject(driver, env, type);
             AllTapd.addAll(tapds);
