@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 public class SeleTestNew {
     private static String picPath;
     // 申请延期的项目，不需要巡检
-    private String[] delayProject = {"yuanqu-ezview-backend-dl", "ty-kdypos-service"};
+    private String[] delayProject = {"yuanqu-ezview-backend-dl", "ty-kdypos-service", "yj-safe-back", "ga-transit-back"};
     
     public static void main(String[] args) throws IOException, InterruptedException {
         SeleTestNew seleTest = new SeleTestNew();
