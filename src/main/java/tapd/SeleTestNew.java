@@ -383,7 +383,8 @@ public class SeleTestNew {
             // enter detail page
             WebElement detailPage = elements.get(i).findElement(By.cssSelector("span.can-click"));
             Thread.sleep(1000);
-            detailPage.click();
+            hoverAndClick(driver, detailPage);
+//            detailPage.click();
         }
         // 等待页面加载
         Thread.sleep(20000);
