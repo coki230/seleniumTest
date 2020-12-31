@@ -39,7 +39,7 @@
                             <addClasspath>true</addClasspath>
                             <useUniqueVersions>false</useUniqueVersions>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>tapd.JustTest</mainClass>
+                            <mainClass>tapd.SeleTestNew</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

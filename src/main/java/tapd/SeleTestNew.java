@@ -47,7 +47,7 @@ public class SeleTestNew {
         SeleTestNew seleTest = new SeleTestNew();
         String os = System.getenv().get("OS");
 //        System.out.println(System.getProperties());
-        if (os.toUpperCase().contains("WINDOWS")) {
+        if (os != null && os.toUpperCase().contains("WINDOWS")) {
             System.setProperty("webdriver.gecko.driver", "E:\\soft\\geckodriver\\geckodriver.exe");
             System.setProperty("webdriver.firefox.bin", "C:\\Program Files\\Mozilla Firefox\\firefox.exe");
             SeleTestNew.picPath = "C:\\Users\\Administrator\\Desktop\\tmp\\";
