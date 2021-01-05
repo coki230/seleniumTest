@@ -140,6 +140,14 @@ public class SeleTestNew {
 
     private void createTapdBase(WebDriver driver, List<Tapd> tapds) throws InterruptedException {
         String mainWindow = driver.getWindowHandle();
+        // 关闭验证邮箱
+        int size = driver.findElements(By.id("colse-validate-bindtips")).size();
+        if (size > 0) {
+            WebElement validate = driver.findElement(By.id("colse-validate-bindtips"));
+            if (validate != null) {
+                validate.click();
+            }
+        }
         for (Tapd tapd : tapds) {
             // create new button
             driver.findElement(By.id("btn_add_bug")).click();
@@ -369,7 +377,7 @@ public class SeleTestNew {
         driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/div[2]/section/div/ul/li[3]")).click();
         // find error project
         WebElement errorProject;
-        Thread.sleep(2000);
+        Thread.sleep(10000);
         if (type.equals("error")) {
             errorProject = driver.findElement(By.xpath("/html/body/div[1]/div/div[2]/div[2]/section/div/div[6]/div/div[3]/div/div/div/div[2]/div[1]/div[2]/div/div/div[3]/table/tbody"));
         } else {
